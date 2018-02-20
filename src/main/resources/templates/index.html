@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CodeReform</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type="text/css">
+</head>
+<body>
+<div class="container" style="padding: 30px;">
+    <h2 align="center" style="margin: 50px;">Welcome to CodeReform</h2>
+
+    <div class="row" align="center">
+        <div class="col-md-5">
+            <div class="row">
+                Copy and Paste your code here:
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <textarea style="border: 3px; width: 80%;" rows="10" id="crDocument1"></textarea>
+            </div>
+            <div class="row">
+                <button id="bSubmit1">Submit</button>
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <h3>Result:</h3>
+                <br>
+                <h3 id="result1"></h3>
+            </div>
+        </div>
+        <!--<div class="col-md-2">spacing</div>-->
+        <div class="col-md-5">
+            <div class="row" style="margin-bottom: 5px;">
+                Copy and Paste your code here:
+            </div>
+            <div class="row" style="margin-top: 15px;">
+                <textarea style="border: 3px; width: 80%;" rows="10" id="crDocument2"></textarea>
+            </div>
+            <div class="row">
+                <button id="bSubmit2">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script
+        src="http://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+
+<script src="js/homeController.js" type="text/javascript"></script>
+</body>
+</html>
