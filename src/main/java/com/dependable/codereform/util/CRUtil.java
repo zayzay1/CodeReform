@@ -2,32 +2,45 @@
 package com.dependable.codereform.util;
 
 import com.dependable.codereform.model.CRDocument;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+@Component
 public class CRUtil {
     private static final String OPERATOR_FOUND = "X";
 
-    private static final String[] operators = {
+    private static final String METHOD_MATCHER = "(public|protected|private|static|\\s) +[\\w\\<\\>\\[\\]]+\\s+(\\w+) *\\([^\\)]*\\) *(\\{?|[^;])";
+    private static final String NUMBER_MATCHER = "[^-?0-9]+";
+    private static final String VARIABLE_MATCHER = "\"[^\"]*\"|((?=_[a-z_0-9]|[a-z])[a-z_0-9]+(?=\\s*=))";
+    private Set<String> distinctOperands = new HashSet<>();
+
+    public CRUtil() {
+        //
+    }
+
+    private final String[] operators = {
             "=", "+", "-", "*", "/", "%"
     };
 
-    private static final String[] dataTypes = {
-            "int", "double", "float", "String", "char", "byte", "boolean"
+    private final String[] dataTypes = {
+            "int", "double", "float", "String", "char", "byte", "boolean", "void"
     };
 
-    private static final Brackets[] brackets = {
-            new Brackets("(", ")"),
-            new Brackets("{", "}"),
-            new Brackets("[", "]")
+    private final String[] numbers = {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9"
     };
 
-    public static int countLines(CRDocument document) {
+    public int countLines(CRDocument document) {
         return document.getContent().split("\n").length;
     }
 
-    // TODO: 08/02/18 Add brackets
-    public static int countDistinctOperators(CRDocument document) {
+    public int countDistinctOperators(CRDocument document) {
         String[] _operators = Arrays.copyOf(operators, operators.length);
 
         char[] characters = document.getContent().toCharArray();
@@ -50,8 +63,7 @@ public class CRUtil {
         return result;
     }
 
-    // TODO: 08/02/18 Add brackets
-    public static int countTotalOperators(CRDocument document) {
+    public int countTotalOperators(CRDocument document) {
         int result = 0;
         char[] characters = document.getContent().toCharArray();
         for (char character : characters) {
@@ -66,76 +78,55 @@ public class CRUtil {
         return result;
     }
 
-    public static int countDistinctOperands(CRDocument document) {
-        return 0;
+    public int countDistinctOperands(CRDocument document) {
+        return this.distinctOperands.size();
     }
 
-    // TODO: 08/02/18 A function (operator in this case) can start with a datatype
-    // TODO: 08/02/18 So try to find a way to distinguish!!!!
-    public static int countTotalOperands(CRDocument document) {
+    public int countTotalOperands(CRDocument document) {
         int result = 0;
         String[] lines = document.getContent().split("\n");
         for (String currentLine : lines) {
-            if (currentLine.contains("("))
-                result += (getQuotes(currentLine) / 2);
+            result += getNumberOfOperand("number", currentLine);
+            result += getNumberOfOperand("method", currentLine);
+            result += getNumberOfOperand("variable", currentLine);
+        }
+        return result;
+    }
 
-            // Check whether the current line contains with a data type.
-            for (String dataType : dataTypes) {
-                if (currentLine.startsWith(dataType)) {
-                    String textAfterDataType = currentLine.substring(dataType.length(), currentLine.length());
-                    if (!textAfterDataType.contains(",") && textAfterDataType.contains("=")) {
-                        String[] variables = textAfterDataType.split(",");
-                        result += variables.length;
-                        break;
-                    }
-                    // Check whether there are functions which are also operands
-                    // TODO: 20/02/18 Find a better way if you can
-                    else if (getQuotes(textAfterDataType) != 0) {
-                        result++;
-                    }
-                }
-            }
+    // this was done during refactoring *
+    private int getNumberMatches(String matcherType, String currentLine) {
+        int result = 0;
+        Pattern pattern = Pattern.compile(matcherType);
+        Matcher matcher = pattern.matcher(currentLine);
+        while (matcher.find()) {
+            this.distinctOperands.add(matcher.group());
+            result++;
         }
 
         return result;
     }
 
-    private static int getNumbers(String currentLine) {
-        // TODO: 08/02/18 Continue workiing here:
-
-        return 0;
-    }
-
-    private static int getQuotes(String currentLine) {
-        int start = currentLine.indexOf("(") + 1;
-        int end = currentLine.indexOf(")");
-        String valueBetween = currentLine.substring(start, end);
-        char[] chars = valueBetween.toCharArray();
-        int quotes = 0;
-        for (Character character: chars) {
-            if (character == '"') {
-                quotes++;
-            }
+    private int getNumberOfOperand(String type, String currentLine) {
+        int result = 0;
+        switch (type) {
+            case "method":
+                result += getNumberMatches(METHOD_MATCHER, currentLine);
+                break;
+            case "number":
+                String str = currentLine.replaceAll(NUMBER_MATCHER, " ");
+                String[] tokens = str.trim().split(" ");
+                for (String token : tokens) {
+                    if (token.length() != 0) {
+                        this.distinctOperands.add(token);
+                        result++;
+                    }
+                }
+                break;
+            case "variable":
+                result += getNumberMatches(VARIABLE_MATCHER, currentLine);
+                break;
         }
 
-        return quotes;
-    }
-
-    private static class Brackets {
-        private String open;
-        private String close;
-
-        public Brackets(String open, String close) {
-            this.open = open;
-            this.close = close;
-        }
-
-        public void setOpen(String open) {
-            this.open = open;
-        }
-
-        public void setClose(String close) {
-            this.close = close;
-        }
+        return result;
     }
 }

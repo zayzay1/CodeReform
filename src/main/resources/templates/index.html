@@ -6,36 +6,38 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type="text/css">
 </head>
 <body>
-<div class="container" style="padding: 30px;">
+<div class="container" style="padding: 30px; background-color: white;">
     <h2 align="center" style="margin: 50px;">Welcome to CodeReform</h2>
 
     <div class="row" align="center">
-        <div class="col-md-5">
+	    <div class="col-md-5" style="float: none; margin: 0 auto;">
             <div class="row">
                 Copy and Paste your code here:
             </div>
             <div class="row" style="margin-top: 15px;">
-                <textarea style="border: 3px; width: 80%;" rows="10" id="crDocument1"></textarea>
+                <textarea style="border: #000000a solid 1px; width: 80%; padding: 10px;" rows="10" id="crDocument1"></textarea>
             </div>
             <div class="row">
-                <button id="bSubmit1">Submit</button>
+                <button class="btn btn-submit" id="bSubmit1" style="margin: 10px;">Submit</button>
             </div>
-            <div class="row" style="margin-top: 15px;">
-                <h3>Result:</h3>
+            <div class="row" style="margin-top: 15px;" align="center">
+                <h3>Score:</h3>
                 <br>
                 <h3 id="result1"></h3>
             </div>
         </div>
-        <!--<div class="col-md-2">spacing</div>-->
+        <div class="col-md-2" style="position: relative; right: 43px;">
+            <button class="btn btn-default" id="bCompare">Compare Code</button>
+        </div>
         <div class="col-md-5">
-            <div class="row" style="margin-bottom: 5px;">
+            <div class="row">
                 Copy and Paste your code here:
             </div>
             <div class="row" style="margin-top: 15px;">
-                <textarea style="border: 3px; width: 80%;" rows="10" id="crDocument2"></textarea>
+                <textarea style="border: #000000a solid 1px; width: 80%; padding: 10px;" rows="10" id="crDocument2"></textarea>
             </div>
-            <div class="row">
-                <button id="bSubmit2">Submit</button>
+            <div class="row" style="margin: 10px;">
+                <button class="btn btn-submit" id="bSubmit2">Submit</button>
             </div>
         </div>
     </div>
